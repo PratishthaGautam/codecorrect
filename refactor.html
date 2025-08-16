@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Refactored Code</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Refactored Code</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="upload.html">Upload Code</a>
+      <a href="refactor.html">Refactored Code</a>
+      <a href="docs.html">Documentation</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Before Refactoring</h2>
+    <pre>
+function sum(a, b, c, d, e) {
+    var s = 0;
+    s = a + b;
+    s = s + c;
+    s = s + d;
+    s = s + e;
+    return s;
+}
+    </pre>
+
+    <h2>After Refactoring</h2>
+    <pre>
+function calculateSum(numbers) {
+    return numbers.reduce((total, num) => total + num, 0);
+}
+    </pre>
+
+    <p><strong>Improvements Made:</strong></p>
+    <ul>
+      <li>Changed unclear function name <code>sum</code> → <code>calculateSum</code>.</li>
+      <li>Replaced multiple additions with <code>reduce()</code> for cleaner logic.</li>
+      <li>Made function flexible by using an array instead of fixed 5 parameters.</li>
+    </ul>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Code Refactor Team</p>
+  </footer>
+</body>
+</html>
