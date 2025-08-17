@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Refactor - Advanced Code Analysis Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-link {
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #667eea;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .code-block {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+        
+        .code-text {
+            color: #e6e6e6;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .nav-link.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .code-input {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #e6e6e6;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            resize: vertical;
+            min-height: 300px;
+        }
+        
+        .code-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold text-gray-800">
+                        <span class="feature-icon">Code</span> Refactor
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#" class="nav-link active" data-page="home">Home</a>
+                        <a href="#" class="nav-link" data-page="about">About</a>
+                        <a href="#" class="nav-link" data-page="refactored">Refactored Code</a>
+                        <a href="#" class="nav-link" data-page="documentation">Documentation</a>
+                        <a href="#" class="nav-link" data-page="code-input">Enter Code</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#" class="nav-link block px-3 py-2" data-page="home">Home</a>
+                <a href="#" class="nav-link block px-3 py-2" data-page="about">About</a>
+                <a href="#" class="nav-link block px-3 py-2" data-page="refactored">Refactored Code</a>
+                <a href="#" class="nav-link block px-3 py-2" data-page="documentation">Documentation</a>
+                <a href="#" class="nav-link block px-3 py-2" data-page="code-input">Enter Code</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <!-- Hero Section -->
+        <section class="gradient-bg text-white py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                        Code Refactor
+                    </h1>
+                    <p class="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
+                        Advanced code refactoring and documentation tool for better code quality.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button class="btn-primary text-white px-8 py-3 rounded-lg font-semibold text-lg" data-page="refactored">
+                            View Examples
+                        </button>
+                        <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-white hover:text-gray-800 transition-all duration-300" data-page="code-input">
+                            Try Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                        Features
+                    </h2>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="card-hover bg-gray-50 p-8 rounded-xl text-center">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Code Analysis</h3>
+                        <p class="text-gray-600">
+                            Analyze code quality and identify improvement opportunities.
+                        </p>
+                    </div>
+                    
+                    <div class="card-hover bg-gray-50 p-8 rounded-xl text-center">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Refactoring</h3>
+                        <p class="text-gray-600">
+                            Automated suggestions for code improvement and optimization.
+                        </p>
+                    </div>
+                    
+                    <div class="card-hover bg-gray-50 p-8 rounded-xl text-center">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Documentation</h3>
+                        <p class="text-gray-600">
+                            Generate comprehensive documentation from your code.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- About Page -->
+    <div id="about" class="page">
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+                        About Code Refactor
+                    </h1>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        A 4th year major project focused on code quality improvement through intelligent refactoring and automated documentation.
+                    </p>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-12 items-center mb-16">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-6">Project Overview</h2>
+                        <p class="text-gray-600 mb-4">
+                            Code Refactor is a software engineering tool designed to improve code quality and maintainability. The project combines static analysis with intelligent refactoring suggestions.
+                        </p>
+                        <p class="text-gray-600 mb-4">
+                            Our tool helps developers identify code issues and provides automated solutions for better software maintenance.
+                        </p>
+                    </div>
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-8 rounded-xl text-white">
+                        <h3 class="text-2xl font-bold mb-4">Project Details</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between">
+                                <span>Languages Supported:</span>
+                                <span class="font-bold">5+</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Refactoring Patterns:</span>
+                                <span class="font-bold">15+</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Development Time:</span>
+                                <span class="font-bold">6 Months</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Team Members -->
+                <div class="bg-gray-50 rounded-xl p-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Team Members</h2>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="text-center bg-white p-6 rounded-lg">
+                            <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-xl font-bold">
+                                AP
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800">Aditya Pandit</h3>
+                        </div>
+                        
+                        <div class="text-center bg-white p-6 rounded-lg">
+                            <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-xl font-bold">
+                                IS
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800">Isha Shah</h3>
+                        </div>
+                        
+                        <div class="text-center bg-white p-6 rounded-lg">
+                            <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-xl font-bold">
+                                LL
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800">Larisha Lamichhane</h3>
+                        </div>
+                        
+                        <div class="text-center bg-white p-6 rounded-lg">
+                            <div class="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-xl font-bold">
+                                PG
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800">Pratishtha Gautam</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Refactored Code Page -->
+    <div id="refactored" class="page">
+        <section class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+                        Refactored Code Examples
+                    </h1>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        See how Code Refactor transforms complex code into clean, maintainable software.
+                    </p>
+                </div>
+                
+                <!-- Example 1: Method Extraction -->
+                <div class="bg-white rounded-xl shadow-lg p-8 mb-12">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Method Extraction Example</h2>
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold text-red-600 mb-4">Before Refactoring</h3>
+                            <div class="code-block">
+                                <div class="code-text">
+                                    <div class="text-blue-400">public void</div> <div class="text-yellow-400">processOrder</div>(<div class="text-blue-400">Order</div> order) {<br>
+                                    &nbsp;&nbsp;<div class="text-blue-400">double</div> total = 0;<br>
+                                    &nbsp;&nbsp;<div class="text-blue-400">for</div>(<div class="text-blue-400">Item</div> item : order.getItems()) {<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;total += item.getPrice() * item.getQuantity();<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;<div class="text-blue-400">if</div>(item.getCategory().equals(<div class="text-green-400">"ELECTRONICS"</div>)) {<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total += item.getPrice() * 0.1;<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                                    &nbsp;&nbsp;}<br>
+                                    &nbsp;&nbsp;<div class="text-blue-400">if</div>(order.getCustomer().isPremium()) {<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;total *= 0.9;<br>
+                                    &nbsp;&nbsp;}<br>
+                                    &nbsp;&nbsp;order.setTotal(total);<br>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold text-green-600 mb-4">After Refactoring</h3>
+                            <div class="code-block">
+                                <div class="code-text">
+                                    <div class="text-blue-400">public void</div> <div class="text-yellow-400">processOrder</div>(<div class="text-blue-400">Order</div> order) {<br>
+                                    &nbsp;&nbsp;<div class="text-blue-400">double</div> total = <div class="text-yellow-400">calculateItemsTotal</div>(order);<br>
+                                    &nbsp;&nbsp;total = <div class="text-yellow-400">applyDiscounts</div>(total, order.getCustomer());<br>
+                                    &nbsp;&nbsp;order.setTotal(total);<br>
+                                    }<br><br>
+                                    <div class="text-blue-400">private double</div> <div class="text-yellow-400">calculateItemsTotal</div>(<div class="text-blue-400">Order</div> order) {<br>
+                                    &nbsp;&nbsp;<div class="text-blue-400">return</div> order.getItems().stream()<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;.mapToDouble(<div class="text-blue-400">this</div>::<div class="text-yellow-400">calculateItemCost</div>)<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;.sum();<br>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Example 2: Class Extraction -->
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Class Extraction Example</h2>
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold text-red-600 mb-4">Before Refactoring</h3>
+                            <div class="code-block">
+                                <div class="code-text">
+                                    <div class="text-blue-400">public class</div> <div class="text-yellow-400">User</div> {<br>
+                                    &nbsp;&nbsp;<div class="text-blue-400">private String</div> name, email;<br>
+                                    &nbsp;&nbsp;<div class="text-blue-400">private List&lt;String&gt;</div> permissions;<br><br>
+                                    &nbsp;&nbsp;<div class="text-blue-400">public void</div> <div class="text-yellow-400">sendEmail</div>(<div class="text-blue-400">String</div> message) {<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<div class="text-green-400">"Sending: "</div> + message);<br>
+                                    &nbsp;&nbsp;}<br><br>
+                                    &nbsp;&nbsp;<div class="text-blue-400">public boolean</div> <div class="text-yellow-400">hasPermission</div>(<div class="text-blue-400">String</div> perm) {<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;<div class="text-blue-400">return</div> permissions.contains(perm);<br>
+                                    &nbsp;&nbsp;}<br>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold text-green-600 mb-4">After Refactoring</h3>
+                            <div class="code-block">
+                                <div class="code-text">
+                                    <div class="text-blue-400">public class</div> <div class="text-yellow-400">User</div> {<br>
+                                    &nbsp;&nbsp;<div class="text-blue-400">private final String</div> name, email;<br>
+                                    &nbsp;&nbsp;<div class="text-blue-400">private final</div> <div class="text-yellow-400">PermissionManager</div> permissions;<br><br>
+                                    &nbsp;&nbsp;<div class="text-blue-400">public boolean</div> <div class="text-yellow-400">hasPermission</div>(<div class="text-blue-400">String</div> perm) {<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;<div class="text-blue-400">return</div> permissions.hasPermission(perm);<br>
+                                    &nbsp;&nbsp;}<br>
+                                    }<br><br>
+                                    <div class="text-blue-400">public class</div> <div class="text-yellow-400">EmailService</div> {<br>
+                                    &nbsp;&nbsp;<div class="text-blue-400">public void</div> <div class="text-yellow-400">sendEmail</div>(<div class="text-yellow-400">User</div> user, <div class="text-blue-400">String</div> msg) {<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<div class="text-green-400">"Sending: "</div> + msg);<br>
+                                    &nbsp;&nbsp;}<br>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Documentation Page -->
+    <div id="documentation" class="page">
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+                        Documentation
+                    </h1>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        Complete guide to using Code Refactor's features and techniques.
+                    </p>
+                </div>
+                
+                <!-- Quick Start -->
+                <div class="bg-gray-50 rounded-xl p-8 mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">Quick Start</h2>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Installation</h3>
+                            <div class="code-block mb-4">
+                                <div class="code-text">
+                                    git clone https://github.com/team/code-refactor<br>
+                                    npm install<br>
+                                    npm start
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Basic Usage</h3>
+                            <div class="code-block">
+                                <div class="code-text">
+                                    coderefactor analyze MyClass.java<br>
+                                    coderefactor document src/<br>
+                                    coderefactor refactor --pattern extract-method
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Refactoring Patterns -->
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-8">Refactoring Patterns</h2>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Extract Method</h3>
+                            <p class="text-gray-600 text-sm">Breaks down long methods into smaller functions.</p>
+                        </div>
+                        
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Extract Class</h3>
+                            <p class="text-gray-600 text-sm">Separates responsibilities into different classes.</p>
+                        </div>
+                        
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Rename Variable</h3>
+                            <p class="text-gray-600 text-sm">Improves code readability with better names.</p>
+                        </div>
+                        
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Replace Conditional</h3>
+                            <p class="text-gray-600 text-sm">Simplifies complex conditional logic.</p>
+                        </div>
+                        
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Remove Duplication</h3>
+                            <p class="text-gray-600 text-sm">Eliminates repeated code blocks.</p>
+                        </div>
+                        
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Introduce Parameter</h3>
+                            <p class="text-gray-600 text-sm">Makes methods more flexible and reusable.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- API Reference -->
+                <div class="bg-white border border-gray-200 rounded-lg p-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">API Reference</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="code-block mb-2">
+                                <div class="code-text">
+                                    <div class="text-blue-400">analyzeCode</div>(<div class="text-yellow-400">filePath</div>: <div class="text-green-400">string</div>) → <div class="text-purple-400">AnalysisResult</div>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 text-sm">Analyzes code file and returns quality metrics.</p>
+                        </div>
+                        
+                        <div>
+                            <div class="code-block mb-2">
+                                <div class="code-text">
+                                    <div class="text-blue-400">applyRefactoring</div>(<div class="text-yellow-400">pattern</div>: <div class="text-green-400">string</div>) → <div class="text-purple-400">RefactorResult</div>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 text-sm">Applies specified refactoring pattern to code.</p>
+                        </div>
+                        
+                        <div>
+                            <div class="code-block mb-2">
+                                <div class="code-text">
+                                    <div class="text-blue-400">generateDocs</div>(<div class="text-yellow-400">sourceDir</div>: <div class="text-green-400">string</div>) → <div class="text-purple-400">Documentation</div>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 text-sm">Generates documentation from source code.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Code Input Page -->
+    <div id="code-input" class="page">
+        <section class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+                        Enter Your Code
+                    </h1>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        Paste your code below to analyze and get refactoring suggestions.
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <!-- Input Section -->
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-4">Input Code</h2>
+                            <textarea 
+                                id="code-input-area" 
+                                class="code-input w-full" 
+                                placeholder="// Paste your code here
+public class Example {
+    public void longMethod() {
+        // Your code...
+    }
+}"
+                            ></textarea>
+                            
+                            <div class="mt-4 flex gap-4">
+                                <button id="analyze-btn" class="btn-primary text-white px-6 py-2 rounded-lg font-semibold">
+                                    Analyze Code
+                                </button>
+                                <button id="clear-btn" class="border-2 border-gray-300 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-50">
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Output Section -->
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-4">Analysis Results</h2>
+                            <div id="analysis-output" class="bg-gray-100 p-6 rounded-lg min-h-[300px]">
+                                <p class="text-gray-500 text-center">
+                                    Enter code and click "Analyze Code" to see results here.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sample Analysis Results (Hidden by default) -->
+                    <div id="sample-results" class="hidden mt-8 grid md:grid-cols-3 gap-6">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-blue-800 mb-3">Code Quality</h3>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-blue-700">Complexity:</span>
+                                    <span class="font-bold text-blue-800">Medium</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-blue-700">Maintainability:</span>
+                                    <span class="font-bold text-blue-800">Good</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-blue-700">Documentation:</span>
+                                    <span class="font-bold text-blue-800">Low</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-yellow-800 mb-3">Suggestions</h3>
+                            <ul class="space-y-2 text-yellow-700">
+                                <li>• Extract method for long functions</li>
+                                <li>• Add documentation comments</li>
+                                <li>• Rename unclear variables</li>
+                                <li>• Reduce nesting depth</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-green-800 mb-3">Improvements</h3>
+                            <ul class="space-y-2 text-green-700">
+                                <li>• Complexity reduction</li>
+                                <li>• Better readability</li>
+                                <li>• Improved maintainability</li>
+                                <li>• Enhanced documentation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Code Refactor</h3>
+                    <p class="text-gray-300">
+                        A 4th year computer engineering project for code quality improvement.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="#" class="nav-link hover:text-white transition-colors" data-page="home">Home</a></li>
+                        <li><a href="#" class="nav-link hover:text-white transition-colors" data-page="about">About</a></li>
+                        <li><a href="#" class="nav-link hover:text-white transition-colors" data-page="refactored">Examples</a></li>
+                        <li><a href="#" class="nav-link hover:text-white transition-colors" data-page="documentation">Documentation</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Project Info</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li>Academic Project</li>
+                        <li>Computer Engineering</li>
+                        <li>Final Year 2025-2026</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2025 Code Refactor Team. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Page navigation system
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update navigation active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            document.querySelectorAll(`[data-page="${pageId}"]`).forEach(link => {
+                link.classList.add('active');
+            });
+            
+            // Close mobile menu
+            document.getElementById('mobile-menu').classList.add('hidden');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Navigation click handlers
+        document.addEventListener('click', (e) => {
+            if (e.target.hasAttribute('data-page')) {
+                e.preventDefault();
+                const pageId = e.target.getAttribute('data-page');
+                showPage(pageId);
+            }
+        });
+        
+        // Code analysis functionality
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const codeInputArea = document.getElementById('code-input-area');
+        const analysisOutput = document.getElementById('analysis-output');
+        const sampleResults = document.getElementById('sample-results');
+        
+        analyzeBtn.addEventListener('click', () => {
+            const code = codeInputArea.value.trim();
+            
+            if (!code) {
+                analysisOutput.innerHTML = '<p class="text-red-500 text-center">Please enter some code to analyze.</p>';
+                return;
+            }
+            
+            // Simulate analysis
+            analysisOutput.innerHTML = `
+                <div class="text-center">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p class="text-gray-600">Analyzing code...</p>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                analysisOutput.innerHTML = `
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Analysis Complete!</h3>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-800 mb-2">Issues Found:</h4>
+                            <ul class="text-blue-700 space-y-1">
+                                <li>• Method complexity: High</li>
+                                <li>• Missing documentation</li>
+                                <li>• Variable naming could be improved</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-green-800 mb-2">Recommendations:</h4>
+                            <ul class="text-green-700 space-y-1">
+                                <li>• Extract methods to reduce complexity</li>
+                                <li>• Add JavaDoc comments</li>
+                                <li>• Use descriptive variable names</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                sampleResults.classList.remove('hidden');
+            }, 2000);
+        });
+        
+        clearBtn.addEventListener('click', () => {
+            codeInputArea.value = '';
+            analysisOutput.innerHTML = '<p class="text-gray-500 text-center">Enter code and click "Analyze Code" to see results here.</p>';
+            sampleResults.classList.add('hidden');
+        });
+        
+        // Initialize with home page
+        showPage('home');
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97076cca87fa8e57',t:'MTc1NTQxNTM5NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
